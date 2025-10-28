@@ -53,6 +53,10 @@
   </style>
 </head>
 <body>
+  <audio controls autoplay>
+  <source src="Alag%20aasman%20-%20(Lo-Fi)%20%20Anuv%20jain%20%20Prod.%20By%20Flawed%20-%20Flawed.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
   <canvas id="confetti"></canvas>
 
   <div class="wrap">
