@@ -53,9 +53,8 @@
   </style>
 </head>
 <body>
-  <audio controls autoplay>
-  <source src="Alag%20aasman%20-%20(Lo-Fi)%20%20Anuv%20jain%20%20Prod.%20By%20Flawed%20-%20Flawed.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
+  <audio id="bgMusic" loop muted>
+  <source src="Alag aasman - (Lo-Fi)  Anuv jain  Prod. By Flawed - Flawed.mp3" type="audio/mpeg">
 </audio>
   <canvas id="confetti"></canvas>
 
@@ -155,111 +154,175 @@
   <audio id="bgAudio" src="lofi.mp3" loop preload="none"></audio>
 
 <script>
-  // IntersectionObserver to reveal stages on scroll
-  const stages = document.querySelectorAll('.stage');
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
-  },{threshold:0.18});
-  stages.forEach(s=>io.observe(s));
+// IntersectionObserver to reveal stages on scroll
+const stages = document.querySelectorAll('.stage');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.18});
+stages.forEach(s=>io.observe(s));
 
-  // audio controls
-  const bgAudio = document.getElementById('bgAudio');
-  const toggleAudio = document.getElementById('toggleAudio');
-  let audioPlaying = false;
-  toggleAudio.addEventListener('click', ()=>{
-    if(!audioPlaying){
-      // try play
-      bgAudio.play().then(()=>{
-        audioPlaying = true; toggleAudio.textContent = 'Pause Lo‑fi';
-      }).catch(()=>{
-        // show small hint — file missing
-        toggleAudio.textContent = 'Audio not found — add lofi.mp3';
-        setTimeout(()=>toggleAudio.textContent='Play Lo‑fi',2500);
-      });
-    } else { bgAudio.pause(); audioPlaying=false; toggleAudio.textContent='Play Lo‑fi'; }
-  });
+// audio controls (button toggle)
+const bgAudio = document.getElementById('bgAudio');
+const toggleAudio = document.getElementById('toggleAudio');
+let audioPlaying = false;
+toggleAudio?.addEventListener('click', ()=>{
+  if(!audioPlaying){
+    bgAudio.play().then(()=>{
+      audioPlaying = true;
+      toggleAudio.textContent = 'Pause Lo-fi';
+    }).catch(()=>{
+      toggleAudio.textContent = 'Audio not found — add lofi.mp3';
+      setTimeout(()=>toggleAudio.textContent='Play Lo-fi',2500);
+    });
+  } else {
+    bgAudio.pause();
+    audioPlaying=false;
+    toggleAudio.textContent='Play Lo-fi';
+  }
+});
 
-  // gentle reveal flow
-  const softReveal = document.getElementById('softReveal');
-  const revealStage = document.getElementById('revealStage');
-  const revealTruth = document.getElementById('revealTruth');
-  const notNow = document.getElementById('notNow');
-  const sanaStage = document.getElementById('sanaStage');
-  const truthStage = document.getElementById('truthStage');
-  const angerStage = document.getElementById('angerStage');
-  const surpriseStage = document.getElementById('surpriseStage');
-  const finalStage = document.getElementById('finalStage');
+// gentle reveal flow
+const softReveal = document.getElementById('softReveal');
+const revealStage = document.getElementById('revealStage');
+const revealTruth = document.getElementById('revealTruth');
+const notNow = document.getElementById('notNow');
+const sanaStage = document.getElementById('sanaStage');
+const truthStage = document.getElementById('truthStage');
+const angerStage = document.getElementById('angerStage');
+const surpriseStage = document.getElementById('surpriseStage');
+const finalStage = document.getElementById('finalStage');
 
-  softReveal?.addEventListener('click', ()=>{ revealStage.scrollIntoView({behavior:'smooth',block:'center'}); revealStage.classList.add('visible'); });
+softReveal?.addEventListener('click', ()=>{
+  revealStage.scrollIntoView({behavior:'smooth',block:'center'});
+  revealStage.classList.add('visible');
+});
 
-  revealTruth?.addEventListener('click', ()=>{
-    // show sana stage and reveal lines one by one
-    sanaStage.style.display='block';
-    sanaStage.scrollIntoView({behavior:'smooth',block:'center'});
-    // reveal first line immediately
-    revealSanaLinesSequential(0);
-    // show next stages with delays
-    setTimeout(()=>{ angerStage.style.display='block'; angerStage.scrollIntoView({behavior:'smooth',block:'center'}); },1600);
-    setTimeout(()=>{ surpriseStage.style.display='block'; },3000);
-    setTimeout(()=>{ finalStage.style.display='block'; },4200);
-  });
+revealTruth?.addEventListener('click', ()=>{
+  sanaStage.style.display='block';
+  sanaStage.scrollIntoView({behavior:'smooth',block:'center'});
+  revealSanaLinesSequential(0);
+  setTimeout(()=>{ angerStage.style.display='block'; angerStage.scrollIntoView({behavior:'smooth',block:'center'}); },1600);
+  setTimeout(()=>{ surpriseStage.style.display='block'; },3000);
+  setTimeout(()=>{ finalStage.style.display='block'; },4200);
+});
 
-  notNow?.addEventListener('click', ()=>{ alert('No pressure. Take your time. We are here when you\'re ready.'); });
+notNow?.addEventListener('click', ()=>{
+  alert('No pressure. Take your time. We are here when you\'re ready.');
+});
 
-  // SANA lines logic
-  const sanaLines = Array.from(document.querySelectorAll('.sanaLine'));
-  let current = 0;
-  const revealNextBtn = document.getElementById('revealNext');
-  const autoRevealBtn = document.getElementById('autoReveal');
-  const skipRevealBtn = document.getElementById('skipReveal');
-  let autoTimer = null;
+// SANA lines logic
+const sanaLines = Array.from(document.querySelectorAll('.sanaLine'));
+let current = 0;
+const revealNextBtn = document.getElementById('revealNext');
+const autoRevealBtn = document.getElementById('autoReveal');
+const skipRevealBtn = document.getElementById('skipReveal');
+let autoTimer = null;
 
-  function showLine(i){ if(i<0||i>=sanaLines.length) return; sanaLines[i].classList.add('visible'); }
-  function revealSanaLinesSequential(startIndex=0){ current = startIndex; showLine(current); }
+function showLine(i){ if(i<0||i>=sanaLines.length) return; sanaLines[i].classList.add('visible'); }
+function revealSanaLinesSequential(startIndex=0){ current = startIndex; showLine(current); }
 
-  revealNextBtn?.addEventListener('click', ()=>{ current++; if(current<sanaLines.length) showLine(current); else revealNextBtn.disabled=true; });
+revealNextBtn?.addEventListener('click', ()=>{
+  current++;
+  if(current<sanaLines.length) showLine(current);
+  else revealNextBtn.disabled=true;
+});
 
-  autoRevealBtn?.addEventListener('click', ()=>{
-    if(autoTimer) { clearInterval(autoTimer); autoTimer=null; autoRevealBtn.textContent='Auto reveal'; return; }
-    autoRevealBtn.textContent='Stop auto';
-    let i=0; showLine(0);
-    autoTimer = setInterval(()=>{ i++; if(i>=sanaLines.length){ clearInterval(autoTimer); autoTimer=null; autoRevealBtn.textContent='Auto reveal'; } else showLine(i); },900);
-  });
+autoRevealBtn?.addEventListener('click', ()=>{
+  if(autoTimer) { clearInterval(autoTimer); autoTimer=null; autoRevealBtn.textContent='Auto reveal'; return; }
+  autoRevealBtn.textContent='Stop auto';
+  let i=0; showLine(0);
+  autoTimer = setInterval(()=>{
+    i++;
+    if(i>=sanaLines.length){
+      clearInterval(autoTimer);
+      autoTimer=null;
+      autoRevealBtn.textContent='Auto reveal';
+    } else showLine(i);
+  },900);
+});
 
-  skipRevealBtn?.addEventListener('click', ()=>{ sanaLines.forEach((ln)=>ln.classList.add('visible')); if(autoTimer){ clearInterval(autoTimer); autoTimer=null; autoRevealBtn.textContent='Auto reveal'; } });
+skipRevealBtn?.addEventListener('click', ()=>{
+  sanaLines.forEach((ln)=>ln.classList.add('visible'));
+  if(autoTimer){ clearInterval(autoTimer); autoTimer=null; autoRevealBtn.textContent='Auto reveal'; }
+});
 
-  // gift open and download
-  const openGift = document.getElementById('openGift');
-  const giftArea = document.getElementById('giftArea');
-  openGift?.addEventListener('click', ()=>{ giftArea.style.display='block'; giftArea.scrollIntoView({behavior:'smooth',block:'center'}); });
+// gift open + download note
+const openGift = document.getElementById('openGift');
+const giftArea = document.getElementById('giftArea');
+openGift?.addEventListener('click', ()=>{
+  giftArea.style.display='block';
+  giftArea.scrollIntoView({behavior:'smooth',block:'center'});
+});
 
-  const downloadNote = document.getElementById('downloadNote');
-  downloadNote?.addEventListener('click', ()=>{
-    const note = `Rehan —
+const downloadNote = document.getElementById('downloadNote');
+downloadNote?.addEventListener('click', ()=>{
+  const note = `Rehan —
 
 You're brave. You were honest. The loss is theirs. We stand with you.
 
 — Alisher`;
-    const blob = new Blob([note],{type:'text/plain'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'for-rehan-note.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-  });
+  const blob = new Blob([note],{type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'for-rehan-note.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+});
 
-  // confetti
-  const confettiCanvas = document.getElementById('confetti');
-  const ctx = confettiCanvas.getContext('2d');
-  function resize(){ confettiCanvas.width = innerWidth; confettiCanvas.height = innerHeight; }
-  addEventListener('resize', resize); resize();
-  function rand(min,max){ return Math.random()*(max-min)+min }
-  function makeConfetti(){ const pieces=[]; for(let i=0;i<120;i++){ pieces.push({x:rand(0,innerWidth),y:rand(-innerHeight,0),vx:rand(-1,1),vy:rand(2,6),w:rand(6,12),h:rand(8,18),col:['#ffd6ea','#fff1f8','#ff9ab3','#ffd6a5'][Math.floor(rand(0,4))]}); }
-    let t=0; function frame(){ ctx.clearRect(0,0,innerWidth,innerHeight); t+=1; for(const p of pieces){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.06; ctx.fillStyle=p.col; ctx.fillRect(p.x,p.y,p.w,p.h); } if(t<300) requestAnimationFrame(frame); else ctx.clearRect(0,0,innerWidth,innerHeight); } frame(); }
-  document.getElementById('celebrate')?.addEventListener('click', ()=>{ makeConfetti(); });
+// confetti
+const confettiCanvas = document.getElementById('confetti');
+const ctx = confettiCanvas.getContext('2d');
+function resize(){ confettiCanvas.width = innerWidth; confettiCanvas.height = innerHeight; }
+addEventListener('resize', resize);
+resize();
+function rand(min,max){ return Math.random()*(max-min)+min }
+function makeConfetti(){
+  const pieces=[];
+  for(let i=0;i<120;i++){
+    pieces.push({
+      x:rand(0,innerWidth),y:rand(-innerHeight,0),
+      vx:rand(-1,1),vy:rand(2,6),
+      w:rand(6,12),h:rand(8,18),
+      col:['#ffd6ea','#fff1f8','#ff9ab3','#ffd6a5'][Math.floor(rand(0,4))]
+    });
+  }
+  let t=0;
+  function frame(){
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    t+=1;
+    for(const p of pieces){
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.06;
+      ctx.fillStyle=p.col; ctx.fillRect(p.x,p.y,p.w,p.h);
+    }
+    if(t<300) requestAnimationFrame(frame);
+    else ctx.clearRect(0,0,innerWidth,innerHeight);
+  }
+  frame();
+}
+document.getElementById('celebrate')?.addEventListener('click', ()=>{ makeConfetti(); });
 
-  // share supportive message copy
-  document.getElementById('shareBtn')?.addEventListener('click', ()=>{ const msg = `Rehan, tu bahut strong hai. Jo tune diya woh saccha tha. Ab aage badh. Hum tere saath hain.`; navigator.clipboard?.writeText(msg).then(()=>alert('Message copied — paste it anywhere to share.')) });
+// share supportive message
+document.getElementById('shareBtn')?.addEventListener('click', ()=>{
+  const msg = `Rehan, tu bahut strong hai. Jo tune diya woh saccha tha. Ab aage badh. Hum tere saath hain.`;
+  navigator.clipboard?.writeText(msg).then(()=>alert('Message copied — paste it anywhere to share.'));
+});
 
-  // keyboard accessibility
-  document.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ const v = document.activeElement; if(v && v.classList && v.classList.contains('revealBtn')) v.click(); } });
-</script>
-</body>
+// keyboard accessibility
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='Enter'){
+    const v = document.activeElement;
+    if(v && v.classList && v.classList.contains('revealBtn')) v.click();
+  }
+});
+
+// ✅ Autoplay music on first click (GitHub Page safe)
+document.addEventListener("click", () => {
+  if(bgAudio){
+    bgAudio.muted = false;
+    bgAudio.play().catch(()=>{});
+  }
+}, { once: true });
+
+  </script>
+ </body>
 </html>
