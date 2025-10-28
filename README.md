@@ -235,7 +235,7 @@
 
 You're brave. You were honest. The loss is theirs. We stand with you.
 
-— Sana`;
+— Alisher`;
     const blob = new Blob([note],{type:'text/plain'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'for-rehan-note.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
