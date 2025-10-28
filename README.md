@@ -146,7 +146,7 @@
 
       </div>
 
-      <footer>>Made with love and care.. (bro jyada kuch nahin but apne bhai ke liye itna hi kar payaa.. mujhe direct sach batane se jyada achha ye hi laga.. im sorry if it hurt u but bro ek na ek din to tujhe ye pata lagna hi tha....</footer>
+      <footer>>Made with love and care.. (bro jyada kuch nahin but apne bhai ke liye itna hi kar payaa.. mujhe direct sach batane se jyada achha ye hi laga.. im sorry if it hurt u but bro ek na ek din to tujhe ye pata lagna hi tha....   bro main utna bhi bada coder nahin hun.. kuch galti hui hogi..#compromise</footer>
     </div>
   </div>
 
